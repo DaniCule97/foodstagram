@@ -3,6 +3,8 @@ package com.dam.javidani.foodstagram;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -12,17 +14,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
+
+import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
+
+    RecyclerView rvRecetas;
+    GridLayoutManager glm;
+    RecetaAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        // Atributos orientados a manejar las recetas.
+        rvRecetas =  findViewById(R.id.rvRecetas);
+        glm = new GridLayoutManager(this, 2);
+        rvRecetas.setLayoutManager(glm);
+        adapter = new RecetaAdapter(dataSet());
+        rvRecetas.setAdapter(adapter);
+
+        // --------------
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,6 +58,15 @@ public class MainActivity extends AppCompatActivity
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
+    }
+    // ARRAY DE RECETAS DE PRUEBA
+    private ArrayList<Receta> dataSet() {
+        ArrayList<Receta> data = new ArrayList<>();
+
+        for (int i = 0; i < 20; i++)
+            data.add(new Receta("Chicote", "Pim pan trucu trucu", "", "", 5));
+
+        return data;
     }
 
     @Override
