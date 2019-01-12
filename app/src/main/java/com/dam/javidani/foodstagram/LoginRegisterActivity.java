@@ -39,6 +39,7 @@ public class LoginRegisterActivity extends AppCompatActivity {
      */
     private ViewPager mViewPager;
     Bundle bundle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,12 +93,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class RegisterFragment extends Fragment {
+    public static class RegisterFragment extends Fragment implements View.OnClickListener {
         /**
          * The fragment argument representing the section number for this
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        private Button registerButton;
 
         public RegisterFragment() {
         }
@@ -119,11 +121,20 @@ public class LoginRegisterActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.register_fragment, container, false);
 
+            registerButton = rootView.findViewById(R.id.registerButton);
+            registerButton.setOnClickListener(this);
             return rootView;
+        }
+
+        @Override
+        public void onClick(View view) {
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            // intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
-    public static class LoginFragment extends Fragment {
+    public static class LoginFragment extends Fragment implements View.OnClickListener {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -151,26 +162,17 @@ public class LoginRegisterActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.login_fragment, container, false);
 
             Button loginButton = rootView.findViewById(R.id.loginButton);
-            Button registerButton = rootView.findViewById(R.id.registerButton);
+            loginButton.setOnClickListener(this);
 
-            loginButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Acceder si el usuario es correcto.
-                    Intent intent = new Intent(getActivity(), MainActivity.class);
-                    // intent.putExtras(bundle);
-                    startActivity(intent);
-                }
-            });
-            /*
-            registerButton.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    // Dar de alta usuario.
-                }
-            });
-            */
             return rootView;
+        }
+
+        @Override
+        public void onClick(View view) {
+            // Acceder si el usuario es correcto.
+            Intent intent = new Intent(getActivity(), MainActivity.class);
+            // intent.putExtras(bundle);
+            startActivity(intent);
         }
     }
 
