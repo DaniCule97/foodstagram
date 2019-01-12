@@ -14,7 +14,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 
 import java.util.ArrayList;
 
@@ -33,8 +32,9 @@ public class MainActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
         // Atributos orientados a manejar las recetas.
-        rvRecetas =  findViewById(R.id.rvRecetas);
-        glm = new GridLayoutManager(this, 2);
+        rvRecetas = findViewById(R.id.rvRecetas);
+        rvRecetas.setHasFixedSize(true);
+        glm = new GridLayoutManager(this, 1);
         rvRecetas.setLayoutManager(glm);
         adapter = new RecetaAdapter(dataSet());
         rvRecetas.setAdapter(adapter);
@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity
         ArrayList<Receta> data = new ArrayList<>();
 
         for (int i = 0; i < 20; i++)
-            data.add(new Receta("Chicote", "Pim pan trucu trucu", "", "", 5));
+            data.add(new Receta("Chicote", "Pim pan trucu trucu", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \n AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "", 5));
 
         return data;
     }
