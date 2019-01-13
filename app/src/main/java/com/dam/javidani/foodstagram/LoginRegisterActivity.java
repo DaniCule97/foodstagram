@@ -165,8 +165,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         TextView login, password;
 
-        String IP = "http://localhost:8081";
-        String POST = IP +  "/login";
+        String IP = "http://dblazquez.iessv.es/ProyectoAndroid";
+        String POST = IP +  "/obtener_login_correcto.php";
         public boolean canLogin;
 
         public LoginFragment() {
@@ -200,9 +200,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+            /*
             Intent intent = new Intent(getActivity(), MainActivity.class);
             startActivity(intent);
-            
+            */
             LoginWebService loginWebService  = new LoginWebService();
             loginWebService.execute(POST, "" + login.getText(), "" + password.getText());
         }
@@ -228,8 +229,8 @@ public class LoginRegisterActivity extends AppCompatActivity {
                     urlConn.connect();
                     //Creo el Objeto JSON
                     JSONObject jsonParam = new JSONObject();
-                    jsonParam.put("login", strings[1]);
-                    jsonParam.put("password", strings[2]);
+                    jsonParam.put("usuario", strings[1]);
+                    jsonParam.put("contrasenya", strings[2]);
                     // Envio los parámetros post.
                     OutputStream os = urlConn.getOutputStream();
                     BufferedWriter writer = new BufferedWriter(
@@ -254,13 +255,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         JSONObject respuestaJSON = new JSONObject(result.toString());
                         //Accedemos al vector de resultados
 
-                        String resultJSON = respuestaJSON.getString("error");
+                        String resultJSON = respuestaJSON.getString("estado");
 
                         if (resultJSON != null) {
-                            if (resultJSON.equals("false")) {
+                            if (resultJSON.equals("1")) {
                                 devuelve = "1";
-
-                            } else if (resultJSON.equals("true")) {
+                            } else if (resultJSON.equals("2")) {
                                 devuelve = "2";
                             }
                         }
