@@ -1,6 +1,8 @@
 package com.dam.javidani.foodstagram;
 
 import android.annotation.SuppressLint;
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,9 +16,10 @@ import java.util.ArrayList;
 public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaViewHolder>{
 
     private ArrayList<Receta> data;
-
-    public RecetaAdapter(ArrayList<Receta> data) {
+    private Context mContext;
+    public RecetaAdapter(Context context, ArrayList<Receta> data) {
         this.data = data;
+        this.mContext = context;
     }
 
     @SuppressLint("ResourceType")
@@ -26,12 +29,22 @@ public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaView
     }
 
     @Override
-    public void onBindViewHolder(RecetaViewHolder holder, int position) {
+    public void onBindViewHolder(RecetaViewHolder holder, final int position) {
         Receta receta = data.get(position);
         // holder.imgMusica.setImageResource(musica.getImagen());
         holder.tvNombre.setText(receta.getNombre());
-        // holder.tvAutor.setText(receta.getAutor());
+        holder.tvAutor.setText(receta.getAutor());
         holder.tvDescripcion.setText(receta.getDescripcion());
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(mContext, RecetaActivity.class);
+                intent.putExtra("autor", data.get(position).getAutor());
+                intent.putExtra("nombre", data.get(position).getNombre());
+                mContext.startActivity(intent);
+            }
+        });
     }
 
     @Override
@@ -46,7 +59,7 @@ public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaView
         public RecetaViewHolder(View itemView){
             super(itemView);
             tvNombre = itemView.findViewById(R.id.tv_nombre);
-            // tvAutor = itemView.findViewById(R.id.tv_autor);
+            tvAutor = itemView.findViewById(R.id.tv_autor);
             tvDescripcion = itemView.findViewById(R.id.tv_descripcion);
         }
     }

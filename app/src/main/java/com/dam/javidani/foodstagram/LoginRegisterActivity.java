@@ -2,6 +2,7 @@ package com.dam.javidani.foodstagram;
 
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,6 +22,24 @@ import android.view.ViewGroup;
 
 import android.widget.Button;
 import android.widget.TextView;
+
+import org.json.JSONObject;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.net.HttpURLConnection;
+import java.net.URL;
+
+import okhttp3.HttpUrl;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
@@ -128,6 +147,9 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
+
+
+
             Intent intent = new Intent(getActivity(), MainActivity.class);
             // intent.putExtras(bundle);
             startActivity(intent);
@@ -140,6 +162,12 @@ public class LoginRegisterActivity extends AppCompatActivity {
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+
+        TextView login, password;
+
+        String IP = "http://localhost:8081";
+        String POST = IP +  "/login";
+        public boolean canLogin;
 
         public LoginFragment() {
         }
@@ -164,15 +192,99 @@ public class LoginRegisterActivity extends AppCompatActivity {
             Button loginButton = rootView.findViewById(R.id.loginButton);
             loginButton.setOnClickListener(this);
 
+            login = rootView.findViewById(R.id.emailLogin);
+            password = rootView.findViewById(R.id.passwordLogin);
+
             return rootView;
         }
 
         @Override
         public void onClick(View view) {
-            // Acceder si el usuario es correcto.
             Intent intent = new Intent(getActivity(), MainActivity.class);
-            // intent.putExtras(bundle);
             startActivity(intent);
+            
+            LoginWebService loginWebService  = new LoginWebService();
+            loginWebService.execute(POST, "" + login.getText(), "" + password.getText());
+        }
+
+        class LoginWebService extends AsyncTask<String, Void, String> {
+
+            @Override
+            protected String doInBackground(String... strings) {
+                String devuelve = "";
+                try {
+
+                    HttpURLConnection urlConn;
+
+                    DataOutputStream printout;
+                    DataInputStream input;
+                    URL url = new URL(strings[0]);
+                    urlConn = (HttpURLConnection) url.openConnection();
+                    urlConn.setDoInput(true);
+                    urlConn.setDoOutput(true);
+                    urlConn.setUseCaches(false);
+                    urlConn.setRequestProperty("Content-Type", "application/json");
+                    urlConn.setRequestProperty("Accept", "application/json");
+                    urlConn.connect();
+                    //Creo el Objeto JSON
+                    JSONObject jsonParam = new JSONObject();
+                    jsonParam.put("login", strings[1]);
+                    jsonParam.put("password", strings[2]);
+                    // Envio los parámetros post.
+                    OutputStream os = urlConn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(
+                            new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(jsonParam.toString());
+                    writer.flush();
+                    writer.close();
+
+                    // Fin del envío de información al servicio
+                    // Comienzo de la recepción de datos
+                    int respuesta = urlConn.getResponseCode();
+
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK) {
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                        while ((line = br.readLine()) != null) {
+                            result.append(line);
+                        }
+
+                        JSONObject respuestaJSON = new JSONObject(result.toString());
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("error");
+
+                        if (resultJSON != null) {
+                            if (resultJSON.equals("false")) {
+                                devuelve = "1";
+
+                            } else if (resultJSON.equals("true")) {
+                                devuelve = "2";
+                            }
+                        }
+                    }
+                    return devuelve;
+
+                } catch (Exception e) {
+                }
+                return devuelve;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (s != null) {
+                    if (s.equals("1")) {
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        // intent.putExtras(bundle);
+                        startActivity(intent);
+                    } else {
+                        canLogin = false;
+                        // errors.setText("LOGIN INCORRECTO");
+                    }
+                }
+            }
         }
     }
 

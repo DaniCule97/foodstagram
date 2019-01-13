@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         rvRecetas.setHasFixedSize(true);
         glm = new GridLayoutManager(this, 1);
         rvRecetas.setLayoutManager(glm);
-        adapter = new RecetaAdapter(dataSet());
+        adapter = new RecetaAdapter(this, dataSet());
         rvRecetas.setAdapter(adapter);
 
         // --------------
@@ -59,12 +59,13 @@ public class MainActivity extends AppCompatActivity
         navigationView.setNavigationItemSelectedListener(this);
 
     }
+
     // ARRAY DE RECETAS DE PRUEBA
     private ArrayList<Receta> dataSet() {
         ArrayList<Receta> data = new ArrayList<>();
 
         for (int i = 0; i < 20; i++)
-            data.add(new Receta("Chicote", "Pim pan trucu trucu", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA \n AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "", 5));
+            data.add(new Receta("Chicote", "Pim pan trucu trucu", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA", "", 5));
 
         return data;
     }
