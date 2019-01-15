@@ -13,11 +13,13 @@ import android.view.ViewGroup;
 import android.view.ViewParent;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class RecetaActivity extends AppCompatActivity {
 
     ViewPager viewPager;
-
+    Bundle bundle;
+    String a, n;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -28,9 +30,8 @@ public class RecetaActivity extends AppCompatActivity {
         ViewPagerAdapter viewPagerAdapter = new ViewPagerAdapter(this);
         viewPager.setAdapter(viewPagerAdapter);
 
+        bundle = getIntent().getExtras();
         getIncomingIntent();
-        Log.d("RecetaActivity", "ONCREATE");
-
     }
 
     private void getIncomingIntent(){
@@ -38,22 +39,7 @@ public class RecetaActivity extends AppCompatActivity {
                 getIntent().hasExtra("nombte")){
             String autor = getIntent().getStringExtra("autor");
             String nombre = getIntent().getStringExtra("nombre");
-
-            Log.d("RecetaActivity", "getIncomingIntent: " + autor + "-" + nombre);
-
-            setAutor(autor);
-            setNombre(nombre);
         }
-    }
-
-    private void setAutor(String autor){
-        TextView autorTv = findViewById(R.id.acRecAutor);
-        autorTv.setText(autor);
-    }
-
-    private void setNombre(String nombre){
-        TextView nombreTv = findViewById(R.id.acRecNombre);
-        nombreTv.setText(nombre);
     }
 
     class ViewPagerAdapter extends PagerAdapter {
@@ -86,6 +72,10 @@ public class RecetaActivity extends AppCompatActivity {
             // imageView.setImageResource(images[position]);
 
             TextView tvNombre = findViewById(R.id.acRecNombre);
+            tvNombre.setText(a);
+
+            TextView tvAutor = findViewById(R.id.acRecAutor);
+            tvAutor.setText(n);
 
             ViewPager vp = (ViewPager) container;
             vp.addView(view, 0);

@@ -117,8 +117,13 @@ public class LoginRegisterActivity extends AppCompatActivity {
          * The fragment argument representing the section number for this
          * fragment.
          */
+
+        String IP = "http://dblazquez.iessv.es/ProyectoAndroid";
+        String POST = IP +  "/registrar.php";
+
         private static final String ARG_SECTION_NUMBER = "section_number";
         private Button registerButton;
+        TextView nombre, contra1, contra2, email;
 
         public RegisterFragment() {
         }
@@ -142,17 +147,107 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
             registerButton = rootView.findViewById(R.id.registerButton);
             registerButton.setOnClickListener(this);
+
+            nombre = rootView.findViewById(R.id.nicknameRegister);
+            email  = rootView.findViewById(R.id.emailRegister);
+            contra1  = rootView.findViewById(R.id.passwordRegister);
+            contra2  = rootView.findViewById(R.id.repeatPasswordRegister);
+
             return rootView;
         }
 
         @Override
         public void onClick(View view) {
+            if (contra1.getText().toString().equals(contra2.getText().toString())){
+                RegisterWebService registerWebService = new RegisterWebService();
+                registerWebService.execute(POST, "" + nombre.getText(), "" + contra1.getText(),
+                        "" + nombre.getText(), "" + email.getText());
+            }
+            /*
+            else{
+                RegisterWebService registerWebService = new RegisterWebService();
+                registerWebService.execute(POST, "" + nombre.getText(), "" + contra1.getText(),
+                        "" + nombre.getText(), "" + email.getText());
+            }
+            */
+        }
 
+        class RegisterWebService extends AsyncTask<String, Void, String> {
 
+            @Override
+            protected String doInBackground(String... strings) {
+                String devuelve = "";
+                try {
 
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            // intent.putExtras(bundle);
-            startActivity(intent);
+                    HttpURLConnection urlConn;
+
+                    DataOutputStream printout;
+                    DataInputStream input;
+                    URL url = new URL(strings[0]);
+                    urlConn = (HttpURLConnection) url.openConnection();
+                    urlConn.setDoInput(true);
+                    urlConn.setDoOutput(true);
+                    urlConn.setUseCaches(false);
+                    urlConn.setRequestProperty("Content-Type", "application/json");
+                    urlConn.setRequestProperty("Accept", "application/json");
+                    urlConn.connect();
+                    //Creo el Objeto JSON
+                    JSONObject jsonParam = new JSONObject();
+                    jsonParam.put("usuario", strings[1]);
+                    jsonParam.put("contrasenya", strings[2]);
+                    jsonParam.put("nombre", strings[3]);
+                    jsonParam.put("correo", strings[4]);
+                    // Envio los parámetros post.
+                    OutputStream os = urlConn.getOutputStream();
+                    BufferedWriter writer = new BufferedWriter(
+                            new OutputStreamWriter(os, "UTF-8"));
+                    writer.write(jsonParam.toString());
+                    writer.flush();
+                    writer.close();
+
+                    // Fin del envío de información al servicio
+                    // Comienzo de la recepción de datos
+                    int respuesta = urlConn.getResponseCode();
+
+                    StringBuilder result = new StringBuilder();
+
+                    if (respuesta == HttpURLConnection.HTTP_OK) {
+                        String line;
+                        BufferedReader br = new BufferedReader(new InputStreamReader(urlConn.getInputStream()));
+                        while ((line = br.readLine()) != null) {
+                            result.append(line);
+                        }
+
+                        JSONObject respuestaJSON = new JSONObject(result.toString());
+                        //Accedemos al vector de resultados
+
+                        String resultJSON = respuestaJSON.getString("estado");
+
+                        if (resultJSON != null) {
+                            if (resultJSON.equals("1")) {
+                                devuelve = "1";
+                            } else if (resultJSON.equals("2")) {
+                                devuelve = "2";
+                            }
+                        }
+                    }
+                    return devuelve;
+
+                } catch (Exception e) {
+                }
+                return devuelve;
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                if (s != null) {
+                    if (s.equals("1")) {
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                    } else {
+                    }
+                }
+            }
         }
     }
 
@@ -200,10 +295,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View view) {
-            /*
-            Intent intent = new Intent(getActivity(), MainActivity.class);
-            startActivity(intent);
-            */
             LoginWebService loginWebService  = new LoginWebService();
             loginWebService.execute(POST, "" + login.getText(), "" + password.getText());
         }
@@ -277,7 +368,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 if (s != null) {
                     if (s.equals("1")) {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
-                        // intent.putExtras(bundle);
                         startActivity(intent);
                     } else {
                         canLogin = false;

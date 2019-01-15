@@ -3,6 +3,8 @@ package com.dam.javidani.foodstagram;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Bundle;
+import android.support.design.widget.Snackbar;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,7 +32,7 @@ public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaView
 
     @Override
     public void onBindViewHolder(RecetaViewHolder holder, final int position) {
-        Receta receta = data.get(position);
+        final Receta receta = data.get(position);
         // holder.imgMusica.setImageResource(musica.getImagen());
         holder.tvNombre.setText(receta.getNombre());
         holder.tvAutor.setText(receta.getAutor());
@@ -40,8 +42,9 @@ public class RecetaAdapter extends RecyclerView.Adapter<RecetaAdapter.RecetaView
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(mContext, RecetaActivity.class);
-                intent.putExtra("autor", data.get(position).getAutor());
-                intent.putExtra("nombre", data.get(position).getNombre());
+
+                intent.putExtra("autor", receta.getAutor());
+                intent.putExtra("nombre", receta.getNombre());
                 mContext.startActivity(intent);
             }
         });
