@@ -163,13 +163,6 @@ public class LoginRegisterActivity extends AppCompatActivity {
                 registerWebService.execute(POST, "" + nombre.getText(), "" + contra1.getText(),
                         "" + nombre.getText(), "" + email.getText());
             }
-            /*
-            else{
-                RegisterWebService registerWebService = new RegisterWebService();
-                registerWebService.execute(POST, "" + nombre.getText(), "" + contra1.getText(),
-                        "" + nombre.getText(), "" + email.getText());
-            }
-            */
         }
 
         class RegisterWebService extends AsyncTask<String, Void, String> {
@@ -245,6 +238,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
                         Intent intent = new Intent(getActivity(), MainActivity.class);
                         startActivity(intent);
                     } else {
+                        // BORRAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        Intent intent = new Intent(getActivity(), MainActivity.class);
+                        startActivity(intent);
+                        // BORRAR !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                     }
                 }
             }

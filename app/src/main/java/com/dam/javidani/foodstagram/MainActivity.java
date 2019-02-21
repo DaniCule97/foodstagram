@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 
     }
 
-    // ARRAY DE RECETAS DE PRUEBA
+    // ARRAYLIST DE RECETAS DE PRUEBA
     private ArrayList<Receta> dataSet() {
         ArrayList<Receta> data = new ArrayList<>();
 
